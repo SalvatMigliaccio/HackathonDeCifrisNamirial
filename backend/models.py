@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Text
 from sqlalchemy.orm import relationship
-from postgres.database import Base
+from pygres.database import Base
 
 class User(Base):
     __tablename__ = "User"
