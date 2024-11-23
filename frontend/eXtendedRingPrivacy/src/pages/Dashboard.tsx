@@ -12,7 +12,8 @@ const Dashboard: React.FC = () => {
         id: 1,
         email: 'amz@bit4id.com',
         name: 'Andrea',
-        isOperator: false
+        isOperator: true,
+        groups:['group1', 'group2']
     }
 
     const practices = [
@@ -37,6 +38,10 @@ const Dashboard: React.FC = () => {
     const handlePracticeClick = (practiceId: number) => {
         setSelectedPractice(practiceId);
     };
+
+    function handleSignEvent(event:any): void {
+        throw new Error('Function not implemented.');
+    }
 
     return (
         <div style={
@@ -117,9 +122,30 @@ const Dashboard: React.FC = () => {
                                         ))}
                                     </List>{selectedPractice !== null &&
                                         <Box
-                                            style={{ marginTop: '20px', flex: 2, width: '100%' }}>
-                                            <Typography variant="h6">Sign your practice step</Typography>
-                                            <button type="submit">Sign</button>
+                                            style={{ marginTop: '20px', flex: 2, width: '100%', display:'flex', 
+                                                flexDirection:'column', alignItems:'center'
+                                             }}>
+                                            <Typography variant="h6" style={{marginBottom:'30px'}}>Sign your practice step</Typography>
+                                            {/* menu a tendina con i gruppi dell'utente */}
+                                            <label htmlFor="">
+                                                Select the group you want to sign as
+                                            </label>
+                                            <select
+                                                style={{ width: '75%', height: '40px', marginBottom: '20px' }}
+                                            >
+                                                {user.groups.map((group) => (
+                                                    <option value={group}>{group}</option>
+                                                ))}
+                                            </select>
+                                            {/* file upload */}
+                                            <label htmlFor="">
+                                                Upload your key
+                                            </label>
+                                            <input type="file" style={{
+                                                width: '75%', height: '40px', marginBottom: '20px'
+                                             }} />
+
+                                            <button onClick={handleSignEvent}>Sign</button>
                                         </Box>}
                                 </Box>
                             )

@@ -32,5 +32,17 @@ services:
     depends_on:
       - postgres
   
+  frontend:
+    extends:
+      file: ./frontend/compose.yml
+      service: frontend
+    
+  
 volumes:
   postgres_data:
+
+networks:
+  frontend_network:
+    driver: bridge
+  backend_network:
+    driver: bridge
