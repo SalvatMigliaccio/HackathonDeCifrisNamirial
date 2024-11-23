@@ -67,24 +67,24 @@ class Ring:
         return result
 
 
-def get_key(path: str):
-    with open(path) as f:
-        return f.read()
+# def get_key(path: str):
+#     with open(path) as f:
+#         return f.read()
 
 
-def create_group():
-    keys = [
-        Public(**KeyBundle.upload_key(f".\\keys\\{i}public.json")) for i in range(5)
-    ]
-    return keys
+# def create_group():
+#     keys = [
+#         Public(**KeyBundle.upload_key(f".\\keys\\{i}public.json")) for i in range(5)
+#     ]
+#     return keys
 
 
-group = create_group()
+# group = create_group()
 
-private = Private(**KeyBundle.upload_key(".\\keys\\1private.json", private=True))
-group[1] = private
+# private = Private(**KeyBundle.upload_key(".\\keys\\1private.json", private=True))
+# group[1] = private
 
-ring = Ring(group)
+# ring = Ring(group)
 
-signed = ring.sign_message("ciao", 1)
-print(ring.verify_message("ciao", signed))
+# signed = ring.sign_message("ciao", 1)
+# print(ring.verify_message("ciao", signed))

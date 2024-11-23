@@ -18,3 +18,8 @@
                 -21px -21px 43px #3e3e3e;
 
 }
+.tabBox .sinistra {
+    border-right: 1px solid #c0c0c0;
+    height: 100%;
+    min-height: 50vh
+}

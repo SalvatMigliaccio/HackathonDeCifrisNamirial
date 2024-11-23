@@ -28,7 +28,7 @@ const Dashboard: React.FC = () => {
     ];
 
 
-    const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    const handleTabChange = (_event: React.ChangeEvent<{}>, newValue: number) => {
         setSelectedTab(newValue);
         console.log('Selected tab:', newValue);
         setSelectedPractice(null);
@@ -56,7 +56,7 @@ const Dashboard: React.FC = () => {
                 {
                     !user.isOperator ? (<Box p={3} className='tabBox'>
                         {selectedTab === 0 && (
-                            <List>
+                            <List className='sinistra'>
                                 {practices.map((practice) => (
                                     <ListItem button key={practice.id} onClick={() => handlePracticeClick(practice.id)}>
                                         <ListItemText primary={practice.name} />
@@ -65,7 +65,7 @@ const Dashboard: React.FC = () => {
                             </List>
                         )}
                         {selectedTab === 1 && (
-                            <List>
+                            <List className='sinistra'>
                                 {closedPractices.map((practice) => (
                                     <ListItem button key={practice.id} onClick={() => handlePracticeClick(practice.id)}>
                                         <ListItemText primary={practice.name} />
@@ -109,7 +109,7 @@ const Dashboard: React.FC = () => {
                         {
                             selectedTab === 1 && (
                                 <Box p={3} className='tabBox'>
-                                    <List>
+                                    <List className='sinistra'>
                                         {practices.map((practice) => (
                                             <ListItem button key={practice.id} onClick={() => handlePracticeClick(practice.id)}>
                                                 <ListItemText primary={practice.name} />
