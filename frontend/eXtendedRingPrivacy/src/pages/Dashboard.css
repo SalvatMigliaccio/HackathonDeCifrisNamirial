@@ -1,0 +1,20 @@
+.tabBox{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+@media screen and (max-width: 480px) {
+    .tabBox {
+        flex-direction: column;
+    }
+    
+}
+#root{
+    border-radius: 0 0 50px 50px;
+    background: #363636;
+    box-shadow:  21px 21px 43px #2e2e2e,
+                -21px -21px 43px #3e3e3e;
+
+}
