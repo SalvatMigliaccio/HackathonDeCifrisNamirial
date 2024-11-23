@@ -39,7 +39,6 @@ async def create_user(
 def update_user_me(
     *,
     db: Session = Depends(get_db),
-    decentraland_id: str = Body(None),
     email: EmailStr = Body(None),
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
@@ -49,13 +48,10 @@ def update_user_me(
     current_user_data = jsonable_encoder(current_user)
     user_in = schemas.UserCreate(**current_user_data)
 
-    if decentraland_id is not None:
-        user_in.decentraland_id = decentraland_id
-
     if email is not None:
         user_in.email = email
 
-    user = crud.user.update(db, db_obj=current_user, obj_in=user_in)
+    user = crud.update_user(db, user_in)
     return user
 
 
