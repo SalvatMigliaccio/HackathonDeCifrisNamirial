@@ -4,12 +4,12 @@ from fastapi import APIRouter, Body, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
 from pydantic.networks import EmailStr
 from sqlalchemy.orm import Session
-from pygres.database import get_db
-from  backend import crud, models, schemas
-from backend.endpoints import deps
-from backend.core.config import settings
-from backend.core.utils import send_new_account_email
-from backend.core import security
+from endpoints.deps import get_db
+import crud, models, schemas
+from  endpoints import deps
+from  core.config import Settings
+from  core.utils import send_new_account_email
+from  core import security
 
 
 
@@ -53,7 +53,7 @@ def create_user(
     return user
 
 
-@router.put("/me", response_model=schemas.User)
+@router.put("/me", response_model=schemas.UserBase)
 def update_user_me(
     *,
     db: Session = Depends(get_db),
@@ -65,7 +65,7 @@ def update_user_me(
     Update own user.
     """
     current_user_data = jsonable_encoder(current_user)
-    user_in = schemas.UserUpdate(**current_user_data)
+    user_in = schemas.UserCreate(**current_user_data)
 
     if decentraland_id is not None:
         user_in.decentraland_id = decentraland_id
@@ -77,7 +77,7 @@ def update_user_me(
     return user
 
 
-@router.get("/me", response_model=schemas.User)
+@router.get("/me", response_model=schemas.UserBase)
 def read_user_me(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(deps.get_current_active_user),
@@ -88,7 +88,7 @@ def read_user_me(
     return current_user
 
 
-@router.get("/{user_id}", response_model=schemas.User)
+@router.get("/{user_id}", response_model=schemas.UserBase)
 def read_user_by_id(
     user_id: str,
     current_user: models.User = Depends(deps.get_current_active_user),
@@ -106,12 +106,12 @@ def read_user_by_id(
     return user
 
 
-@router.put("/{user_id}", response_model=schemas.User)
+@router.put("/{user_id}", response_model=schemas.UserBase)
 def update_user(
     *,
     db: Session = Depends(deps.get_db),
     user_id: str,
-    user_in: schemas.UserUpdate,
+    user_in: schemas.UserBase,
     current_user: models.User = Depends(deps.get_current_active_superuser),
 ) -> Any:
     """

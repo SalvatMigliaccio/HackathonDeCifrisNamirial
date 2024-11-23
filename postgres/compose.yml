@@ -3,26 +3,15 @@ services:
     image: postgres:15
     container_name: postgres_db
     environment:
-      POSTGRES_USER: Hackaton2024
-      POSTGRES_PASSWORD: Hackaton2024
-      POSTGRES_DB: db_Hackaton2024
+      POSTGRES_USER: Hackathon2024
+      POSTGRES_PASSWORD: Hackathon2024
+      POSTGRES_DB: db_Hackathon2024
     ports:
       - "5432:5432"  # Mappa la porta 5432 del container a 5433 sulla macchina locale
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
-  fastapi:
-    build: .
-    container_name: fastapi_app
-    depends_on:
-      - postgres
-    ports:
-      - "8000:8000"  # Mappa la porta 8000 del container a 8000 sulla macchina locale
-    environment:
-      DATABASE_URL: "postgresql://Hackaton2024:Hackaton2024@postgres:5432/db_Hackaton2024"  # URL del DB PostgreSQL (utilizzando il nome del servizio come host)
-    volumes:
-      - .:/app
 
 volumes:
   postgres_data:
