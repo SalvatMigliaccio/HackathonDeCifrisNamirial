@@ -7,3 +7,8 @@ class SignRequest(BaseModel):
     dossier_address: str
     document_uri: str
     group: int
+
+
+class DossierResponse(BaseModel):
+    address: str
+    seed: str
