@@ -1,4 +1,4 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
@@ -9,7 +9,6 @@ class Settings(BaseSettings):
     COOKIES_DOMAIN: str = ""
     FRONTEND_URL: str
 
-    API_V1_STR: str
     FIRST_SUPERUSER_EMAIL: str
     FIRST_SUPERUSER_FISCALCODE: str
     USERS_OPEN_REGISTRATION: str
@@ -28,4 +27,4 @@ class Settings(BaseSettings):
         env_file = '/backend/.env'
 
 
-settings = Settings()
+# settings = Settings()

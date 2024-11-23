@@ -10,12 +10,12 @@ User:
     - Nome Utente
     - Password (hash) 
 
-Operatori:
+Operatore:
     -UID
     - Nome utente
     - Password (hashata)
 
-Gruppi:
+Gruppo:
     -UID
     -Name Group
     -ID Gruppo Genitore (nullable) 

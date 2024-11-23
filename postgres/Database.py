@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # URL di connessione al database PostgreSQL
-DATABASE_URL = "postgresql://Hackaton2024:Hackaton2024@postgres:5432/db_Hackaton2024"
+DATABASE_URL = "postgresql://Hackathon2024:Hackathon2024@postgres:5432/db_Hackathon2024"
 
 # Crea l'engine di connessione
 engine = create_engine(DATABASE_URL, echo=True)

@@ -5,17 +5,17 @@ from fastapi.security import OAuth2PasswordBearer
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
 
-from backend import crud, models, schemas
-from backend.core import security
-from backend.core.config import settings
-from backend.pygres.database import SessionLocal
+import crud, models, schemas
+from  core import security
+from  core.config import Settings
+from  pygres.database import SessionLocal
 import datetime
 
 import logging
 logger = logging.getLogger(__name__)
 
 reusable_oauth2 = OAuth2PasswordBearer(
-    tokenUrl=f"{settings.API_V1_STR}/login/access-token"
+    tokenUrl=f"api/login/access-token"
 )
 
 
@@ -32,7 +32,7 @@ def get_current_user(
 ) -> models.User:
     try:
         payload = jwt.decode(
-            token, settings.JWT_PRIVATE_KEY, algorithms=[security.ALGORITHM]
+            token, Settings.JWT_PRIVATE_KEY, algorithms=[security.ALGORITHM]
         )
         token_data = schemas.TokenPayload(**payload)
     except (jwt.JWTError, ValidationError) as e:
@@ -101,7 +101,7 @@ def _check_session(
 def add_cookie(response: Response, key, value: str, **kwargs):
     response.set_cookie(key=key,
                         value=value,
-                        max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES*60,
-                        domain=settings.COOKIES_DOMAIN if settings.COOKIES_DOMAIN else None,
+                        max_age=Settings.ACCESS_TOKEN_EXPIRE_MINUTES*60,
+                        domain=Settings.COOKIES_DOMAIN if Settings.COOKIES_DOMAIN else None,
                         **kwargs
                         )
