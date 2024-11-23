@@ -24,8 +24,8 @@ async def delete_user(db: AsyncSession, user: User):
     
 async def update_user(db: AsyncSession, user: User):
     db.add(user)
-    await db.commit()
-    await db.refresh(user)
+    db.commit()
+    db.refresh(user)
     
 async def get_operator_by_email(db: AsyncSession, email: str):
     result = db.execute(select(Operatore).filter(Operatore.email == email))
@@ -33,8 +33,8 @@ async def get_operator_by_email(db: AsyncSession, email: str):
 
 async def create_operator(db: AsyncSession, operatori: Operatore):
     db.add(operatori)
-    await db.commit()
-    await db.refresh(operatori)
+    db.commit()
+    db.refresh(operatori)
     return operatori
 
 async def get_operator_me(db: AsyncSession, user_id: int):
@@ -43,33 +43,40 @@ async def get_operator_me(db: AsyncSession, user_id: int):
 
 async def delete_operator(db: AsyncSession, operatori: Operatore):
     db.delete(operatori)
-    await db.commit()
+    db.commit()
     
 async def update_operator(db: AsyncSession, operatori: Operatore):
     db.add(operatori)
-    await db.commit()
-    await db.refresh(operatori)
+    db.commit()
+    db.refresh(operatori)
     
 #defining crud for operator groups
+async def get_groups(db: AsyncSession, user_id: int):
+    result = await db.execute(select(OperatoreGruppo).filter(OperatoreGruppo.operator_id == user_id))
+    return result
 
-async def get_group_by_id(db: AsyncSession, id: str):
+async def get_dossiers(db: AsyncSession, user_id: int):
+    result = await db.execute(select(Pratica).filter(Pratica.user_id == user_id))
+    return result
+
+async def get_group_by_id(db: AsyncSession, id: int):
     result = await db.execute(select(Gruppo).filter(Gruppo.id == id))
     return result.scalars().first()
 
 async def create_group(db: AsyncSession, group: Gruppo):
     db.add(group)
-    await db.commit()
-    await db.refresh(group)
+    db.commit()
+    db.refresh(group)
     return group
 
 async def delete_group(db: AsyncSession, group: Gruppo):
     db.delete(group)
-    await db.commit()   
+    db.commit()   
     
 async def update_group(db: AsyncSession, group: Gruppo):
     db.add(group)
-    await db.commit()
-    await db.refresh(group)
+    db.commit()
+    db.refresh(group)
     
 #defining crud for pratica
 
@@ -79,18 +86,18 @@ async def get_pratica_by_wallet_address(db: AsyncSession, wallett_address: str):
 
 async def create_pratica(db: AsyncSession, pratica: Pratica):
     db.add(pratica)
-    await db.commit()
-    await db.refresh(pratica)
+    db.commit()
+    db.refresh(pratica)
     return pratica
 
 async def delete_pratica(db: AsyncSession, pratica: Pratica):
     db.delete(pratica)
-    await db.commit()
+    db.commit()
     
 async def update_pratica(db: AsyncSession, pratica: Pratica):
     db.add(pratica)
-    await db.commit()
-    await db.refresh(pratica)
+    db.commit()
+    db.refresh(pratica)
     
 #defining crud for documento
 

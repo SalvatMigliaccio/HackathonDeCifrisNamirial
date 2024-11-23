@@ -12,13 +12,15 @@ client = JsonRpcClient("https://s.altnet.rippletest.net:51234/")
 
 
 class ChainUtils:
+    
+    @staticmethod
+    def create_account():
+        new_wallet = Wallet.create(client)
+        return new_wallet
 
     @staticmethod
     def get_account(seed=""):
-        if not seed:
-            new_wallet = Wallet.create()
-        else:
-            new_wallet = Wallet.from_seed(seed)
+        new_wallet = Wallet.from_seed(seed)
         return new_wallet
 
     @classmethod
