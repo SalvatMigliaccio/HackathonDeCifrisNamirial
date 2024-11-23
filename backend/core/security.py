@@ -4,7 +4,7 @@ from typing import Any, Union
 from jose import jwt
 from passlib.context import CryptContext
 
-from backend.core.config import settings
+from  core.config import Settings
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -16,7 +16,7 @@ def create_access_token(
     subject: Union[str, Any], expires_delta: timedelta = None, isOperator: bool = False
 ) -> str:
     expire = datetime.utcnow() + expires_delta if expires_delta else timedelta(
-        minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
+        minutes=Settings.ACCESS_TOKEN_EXPIRE_MINUTES
     )
     to_encode = {
         "iat": datetime.utcnow(),

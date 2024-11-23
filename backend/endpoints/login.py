@@ -7,14 +7,14 @@ from fastapi import APIRouter, Body, Depends, HTTPException, Request, Response, 
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
-from backend import crud, models, schemas
-from backend.endpoints import deps
-from backend.core import security
-from backend.core.config import settings
-from backend.endpoints.deps import add_cookie
+import crud, models, schemas
+from  endpoints import deps
+from  core import security
+from  core.config import Settings
+from  endpoints.deps import add_cookie
 
 
-from backend.schemas import UserCreate
+from  schemas import UserCreate
 
 
 logger = logging.getLogger(__name__)
@@ -54,7 +54,7 @@ async def user_auth(
 
     access_token = security.create_access_token(
         db_user.id,
-        timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES), is_operator
+        timedelta(minutes=Settings.ACCESS_TOKEN_EXPIRE_MINUTES), is_operator
     ) or ""
 
     add_cookie(response=response, key="token", value=access_token)
@@ -69,7 +69,7 @@ async def signin(
     db: Session = Depends(deps.get_db),
 ):
     if is_operator:
-        db_user: models.Operatori = crud.get_operator_by_email(
+        db_user: models.Operatore = crud.get_operator_by_email(
             db=db, email=email)
         if db_user is not None:
             raise HTTPException(

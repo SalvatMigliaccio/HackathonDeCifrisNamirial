@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from backend.models import User, Operatori, Gruppi, Pratica, Documento, OperatoreGruppo
+from  models import User, Operatore, Gruppo, Pratica, Documento, OperatoreGruppo
 
 async def get_user_by_email(db: AsyncSession, email: str):
     result = await db.execute(select(User).filter(User.email == email))
@@ -26,24 +26,24 @@ async def update_user(db: AsyncSession, user: User):
     await db.refresh(user)
     
 async def get_operator_by_email(db: AsyncSession, email: str):
-    result = await db.execute(select(Operatori).filter(Operatori.email == email))
+    result = await db.execute(select(Operatore).filter(Operatore.email == email))
     return result.scalars().first()
 
-async def create_operator(db: AsyncSession, operatori: Operatori):
+async def create_operator(db: AsyncSession, operatori: Operatore):
     db.add(operatori)
     await db.commit()
     await db.refresh(operatori)
     return operatori
 
 async def get_operator_me(db: AsyncSession, user_id: int):
-    result = await db.execute(select(Operatori).filter(Operatori.UID == user_id))
+    result = await db.execute(select(Operatore).filter(Operatore.UID == user_id))
     return result.scalars().first()
 
-async def delete_operator(db: AsyncSession, operatori: Operatori):
+async def delete_operator(db: AsyncSession, operatori: Operatore):
     db.delete(operatori)
     await db.commit()
     
-async def update_operator(db: AsyncSession, operatori: Operatori):
+async def update_operator(db: AsyncSession, operatori: Operatore):
     db.add(operatori)
     await db.commit()
     await db.refresh(operatori)
@@ -51,20 +51,20 @@ async def update_operator(db: AsyncSession, operatori: Operatori):
 #defining crud for operator groups
 
 async def get_group_by_id(db: AsyncSession, uid: str):
-    result = await db.execute(select(Gruppi).filter(Gruppi.UID == uid))
+    result = await db.execute(select(Gruppo).filter(Gruppo.UID == uid))
     return result.scalars().first()
 
-async def create_group(db: AsyncSession, group: Gruppi):
+async def create_group(db: AsyncSession, group: Gruppo):
     db.add(group)
     await db.commit()
     await db.refresh(group)
     return group
 
-async def delete_group(db: AsyncSession, group: Gruppi):
+async def delete_group(db: AsyncSession, group: Gruppo):
     db.delete(group)
     await db.commit()   
     
-async def update_group(db: AsyncSession, group: Gruppi):
+async def update_group(db: AsyncSession, group: Gruppo):
     db.add(group)
     await db.commit()
     await db.refresh(group)
