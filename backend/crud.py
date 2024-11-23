@@ -1,15 +1,17 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from schemas import UserCreate
 from  models import User, Operatore, Gruppo, Pratica, Documento, OperatoreGruppo
 
 async def get_user_by_email(db: AsyncSession, email: str):
-    result = await db.execute(select(User).filter(User.email == email))
+    result = db.execute(select(User).filter(User.email == email))
     return result.scalars().first()
 
-async def create_user(db: AsyncSession, user: User):
+async def create_user(db: AsyncSession, user: UserCreate):
+    user = User(**user.dict())
     db.add(user)
-    await db.commit()
-    await db.refresh(user)
+    db.commit()
+    db.refresh(user)
     return user
 
 async def get_user_me(db: AsyncSession, user_id: int):
@@ -26,7 +28,7 @@ async def update_user(db: AsyncSession, user: User):
     await db.refresh(user)
     
 async def get_operator_by_email(db: AsyncSession, email: str):
-    result = await db.execute(select(Operatore).filter(Operatore.email == email))
+    result = db.execute(select(Operatore).filter(Operatore.email == email))
     return result.scalars().first()
 
 async def create_operator(db: AsyncSession, operatori: Operatore):

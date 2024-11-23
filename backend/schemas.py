@@ -2,10 +2,11 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 
 class UserBase(BaseModel):
-    Username: str
+    username: str
+    email: str
 
 class UserCreate(UserBase):
-    passwordHash: str
+    password_hash: str
 
 class UserRead(UserBase):
     UID: int
@@ -15,10 +16,10 @@ class UserRead(UserBase):
 
 
 class OperatoriBase(BaseModel):
-    Username: str
+    username: str
 
 class OperatoriCreate(OperatoriBase):
-    passwordHash: str
+    password_hash: str
 
 class OperatoriRead(OperatoriBase):
     UID: int
