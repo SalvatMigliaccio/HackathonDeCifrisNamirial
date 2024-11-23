@@ -1,6 +1,6 @@
 import hashlib
 import random
-from crud.src.key_bundle import Private, Public, KeyBundle
+from key_bundle import Private, Public, KeyBundle
 
 
 import functools
@@ -52,11 +52,11 @@ class Ring:
 
     def _permut(self, m):
         msg = m.encode("utf-8")
-        self.p = int(hashlib.sha1(msg).hexdigest(), 16)
+        self.p = int(hashlib.sha256(msg).hexdigest(), 16)
 
     def _E(self, x):
         msg = f"{x}{self.p}".encode("utf-8")
-        return int(hashlib.sha1(msg).hexdigest(), 16)
+        return int(hashlib.sha256(msg).hexdigest(), 16)
 
     def _g(self, x, e, n):
         q, r = divmod(x, n)
@@ -87,4 +87,4 @@ group[1] = private
 ring = Ring(group)
 
 signed = ring.sign_message("ciao", 1)
-print(len(signed))
+print(ring.verify_message("ciao", signed))
