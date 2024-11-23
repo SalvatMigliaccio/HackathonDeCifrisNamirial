@@ -15,7 +15,7 @@ class ChainUtils:
     
     @staticmethod
     def create_account():
-        new_wallet = Wallet.create(client)
+        new_wallet = Wallet.create()
         return new_wallet
 
     @staticmethod

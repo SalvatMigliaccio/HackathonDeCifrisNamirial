@@ -3,18 +3,67 @@ import { Typography, Tabs, Tab, Box, List, ListItem, ListItemText } from '@mater
 import Navbar from '../components/navbar';
 import './Dashboard.css';
 import Textfield from '../components/Textfield';
+import TransactionService from '../services/transaction';
+import auth from '../services/auth';
 
 const Dashboard: React.FC = () => {
     const [selectedTab, setSelectedTab] = useState(0);
     const [selectedPractice, setSelectedPractice] = useState<number | null>(null);
-
-    const user = {
+    const [nome, setNome] = useState('');
+    const [email, setEmail] = useState('');
+    const [group, setGroup] = useState('');
+    const [file, setFile] = useState<File | null>(null);
+    const [user, setUser] = useState({
         id: 1,
-        email: 'amz@bit4id.com',
-        name: 'Andrea',
+        email: '',
+        isOperator: false,
+        groups: ['']
+    })
+
+    //create fke user object
+    const user_fake = {
+        id: 1,
+        email: "giacomo@gmail.com",
         isOperator: true,
-        groups:['group1', 'group2']
+        groups: ['group1', 'group2'],
     }
+
+    const fake_groups = ['group1', 'group2', 'group3'];
+
+
+
+    React.useEffect(() => {
+        (async () => {
+            // estraggo il cookie token, decripto il payload de ljwt e setto lo stato id e isOperator che trovo lì
+            const token = document.cookie.split(';')?.find((cookie) => cookie.trim().startsWith('token='))?.split('=')[1];
+
+            // estraggo il payload dal token
+            const payload = (token ?? '.').split('.')[1];
+            const decodedPayload = atob(payload);
+            const parsedPayload = JSON.parse(decodedPayload);
+            const email = user_fake.email; //get user by id or email al posto di getMe
+
+            const groups = fake_groups //mockare con gruppi fasulli
+
+            setUser({
+                id: parsedPayload.id,
+                email: email,
+                //isOperator: parsedPayload.isOperator,
+                isOperator: true,
+                groups: groups
+            });
+        })();
+    }, []);
+
+
+
+    // const user = {
+    //     id: 1,
+    //     email: 'amz@bit4id.com',
+    //     name: 'Andrea',
+    //     isOperator: true,
+    //     groups:['group1', 'group2']
+    // }
 
     const practices = [
         { id: 1, name: 'Richiesta Carta identità', steps: ['Step 1', 'Step 2', 'Step 3'] },
@@ -39,8 +88,13 @@ const Dashboard: React.FC = () => {
         setSelectedPractice(practiceId);
     };
 
-    function handleSignEvent(event:any): void {
+    function handleSignEvent(event: any): void {
         throw new Error('Function not implemented.');
+    }
+
+    function handleDossierCreation(event: any): void {
+        event.preventDefault();
+        TransactionService.startDossier();
     }
 
     return (
@@ -94,19 +148,20 @@ const Dashboard: React.FC = () => {
                     ) : (<>
 
                         {selectedTab === 0 && (<div>
-                            <Typography variant="h6" style={{ marginTop: '20px'}}>Start a new practice</Typography>
-                            <form style={
-                                { display: 'flex', flexDirection: 'column', width: '50%',
+                            <Typography variant="h6" style={{ marginTop: '20px' }}>Start a new practice</Typography>
+                            <form onSubmit={handleDossierCreation} style={
+                                {
+                                    display: 'flex', flexDirection: 'column', width: '50%',
                                     alignContent: 'center', margin: 'auto', gap: '20px'
-                                 }
+                                }
                             } >
-                                <Textfield label="Practice name" type='text' 
-                                    value = {''}
-                                    onChange = {() => {}}
+                                <Textfield label="Practice name" type='text'
+                                    value={nome}
+                                    onChange={(e) => setNome(e.target.value)}
                                 />
-                                <Textfield label="User's email" type='text' 
-                                    value = {''}
-                                    onChange = {() => {}}
+                                <Textfield label="User's email" type='text'
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                 />
                                 <button type="submit">Start</button>
                             </form></div>
@@ -122,10 +177,11 @@ const Dashboard: React.FC = () => {
                                         ))}
                                     </List>{selectedPractice !== null &&
                                         <Box
-                                            style={{ marginTop: '20px', flex: 2, width: '100%', display:'flex', 
-                                                flexDirection:'column', alignItems:'center'
-                                             }}>
-                                            <Typography variant="h6" style={{marginBottom:'30px'}}>Sign your practice step</Typography>
+                                            style={{
+                                                marginTop: '20px', flex: 2, width: '100%', display: 'flex',
+                                                flexDirection: 'column', alignItems: 'center'
+                                            }}>
+                                            <Typography variant="h6" style={{ marginBottom: '30px' }}>Sign your practice step</Typography>
                                             {/* menu a tendina con i gruppi dell'utente */}
                                             <label htmlFor="">
                                                 Select the group you want to sign as
@@ -143,7 +199,7 @@ const Dashboard: React.FC = () => {
                                             </label>
                                             <input type="file" style={{
                                                 width: '75%', height: '40px', marginBottom: '20px'
-                                             }} />
+                                            }} />
 
                                             <button onClick={handleSignEvent}>Sign</button>
                                         </Box>}

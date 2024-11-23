@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Textfield from '../components/Textfield';
 import './Form.css';
 import { Link } from 'react-router-dom';
+import auth from '../services/auth';
 
 const Register: React.FC = () => {
     const [username, setUsername] = useState('');
@@ -11,9 +12,7 @@ const Register: React.FC = () => {
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
         // Handle registration logic here
-        console.log('Username:', username);
-        console.log('Email:', email);
-        console.log('Password:', password);
+        auth.signIn(username, email, password);
     };
 
     return (

@@ -45,16 +45,12 @@ def get_current_user(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
-    session = crud.session.get_by_user(db=db, user_id=user.id)
-    _check_session(session)
     return user
 
 
 def get_current_active_user(
     current_user: models.User = Depends(get_current_user),
 ) -> models.User:
-    if not crud.user.is_active(current_user):
-        raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
 
@@ -101,6 +97,6 @@ def add_cookie(response: Response, key, value: str, **kwargs):
     response.set_cookie(key=key,
                         value=value,
                         max_age=config.ACCESS_TOKEN_EXPIRE_MINUTES*60,
-                        domain=config.COOKIES_DOMAIN if config.COOKIES_DOMAIN else None,
+                        domain='localhost',
                         **kwargs
                         )

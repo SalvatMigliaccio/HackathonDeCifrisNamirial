@@ -57,7 +57,7 @@ async def user_auth(
     ) or ""
 
     add_cookie(response=response, key="token", value=access_token)
-    return response
+    return {'token': access_token}
 
 async def signin(
     response: Response,

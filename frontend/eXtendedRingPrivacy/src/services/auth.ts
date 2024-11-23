@@ -13,12 +13,29 @@ class AuthService {
     }
 
     public async login(email: string, password: string): Promise<any> {
-        return await fetch('${AUTHAPI}/api/login', { method: 'POST', body: JSON.stringify({ username:email, password }) });
-    }
+        fetch(`${AUTHAPI}/api/login`, 
+            {
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                method: 'POST',
+                body: `username=${email}&password=${password}`,
+            }).then((response) => {
+                if (response.ok) {
+                    response.json().then((data) => {
+                        console.log({data});
+                        document.cookie = `token=${data.token}`;
+                        window.location.href = '/dashboard';
+                    });
+                } else {
+                    alert('Login failed');
+                }
+            });}
 
-    public async signIn(username:string, email: string, password: string): Promise<any> {
+
+    
+
+    public async signIn(username:string, email: string, password_hash: string): Promise<any> {
       
-      return await fetch('${AUTHAPI}/api/users/', { method: 'POST', body: JSON.stringify({ username, email, password }) });
+      return await fetch(`${AUTHAPI}/api/users/`, { method: `POST`, headers: {"Content-Type": "application/json"}, body: JSON.stringify({ username, email, password_hash }) });
  
     }
 
@@ -33,9 +50,9 @@ class AuthService {
 
 
     public async getUserByEmail(email: string): Promise<any> {
-        // Implement get_user_by_email logic here
-        // Example:
-        // return await fetch(`/api/users?email=${email}`, { method: 'GET' });
+
+        return await fetch(`/api/users?email=${email}`, { method: 'GET' });
+
     }
 
     public async getMyGroups(): Promise<any> {
