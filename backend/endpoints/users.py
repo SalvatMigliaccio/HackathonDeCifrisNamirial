@@ -20,7 +20,7 @@ def read_users(
     db: Session = Depends(get_db),
     skip: int = 0,
     limit: int = 100,
-    current_user: models.User = Depends(deps.get_current_active_superuser),
+    # current_user: models.User = Depends(deps.get_current_active_superuser),
 ) -> Any:
     """
     Retrieve users.
@@ -53,7 +53,6 @@ async def create_user(
 def update_user_me(
     *,
     db: Session = Depends(get_db),
-    decentraland_id: str = Body(None),
     email: EmailStr = Body(None),
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
@@ -63,13 +62,10 @@ def update_user_me(
     current_user_data = jsonable_encoder(current_user)
     user_in = schemas.UserCreate(**current_user_data)
 
-    if decentraland_id is not None:
-        user_in.decentraland_id = decentraland_id
-
     if email is not None:
         user_in.email = email
 
-    user = crud.user.update(db, db_obj=current_user, obj_in=user_in)
+    user = crud.update_user(db, user_in)
     return user
 
 
@@ -84,36 +80,20 @@ def read_user_me(
     return current_user
 
 
-@router.get("/{user_id}", response_model=schemas.UserBase)
-def read_user_by_id(
-    user_id: str,
-    current_user: models.User = Depends(deps.get_current_active_user),
-    db: Session = Depends(deps.get_db),
-) -> Any:
-    """
-    Get a specific user by id.
-    """
-    user = crud.user.get(db, id=user_id)
-    
-    if not user == current_user and not crud.user.is_superuser(current_user):
-        raise HTTPException(
-            status_code=400, detail="The user doesn't have enough privileges"
-        )
-    return user
 
 
 @router.put("/{user_id}", response_model=schemas.UserBase)
 def update_user(
     *,
     db: Session = Depends(deps.get_db),
-    user_id: str,
+    email: str,
     user_in: schemas.UserBase,
-    current_user: models.User = Depends(deps.get_current_active_superuser),
+    # current_user: models.User = Depends(deps.get_current_active_superuser),
 ) -> Any:
     """
     Update a user.
     """
-    user = crud.user.get(db, id=user_id)
+    user = crud.get_user_by_email(db, email=email)
     if not user:
         raise HTTPException(
             status_code=404,
