@@ -6,8 +6,7 @@ from pydantic import ValidationError
 from sqlalchemy.orm import Session
 
 import crud, models, schemas
-from  core import security
-from  core.config import Settings
+from  core import security, config
 from  pygres.database import SessionLocal
 import datetime
 
@@ -15,7 +14,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 reusable_oauth2 = OAuth2PasswordBearer(
-    tokenUrl=f"api/login/access-token"
+    tokenUrl=f"api/login/"
 )
 
 
@@ -32,7 +31,7 @@ def get_current_user(
 ) -> models.User:
     try:
         payload = jwt.decode(
-            token, Settings.JWT_PRIVATE_KEY, algorithms=[security.ALGORITHM]
+            token, config.JWT_PRIVATE_KEY, algorithms=[security.ALGORITHM]
         )
         token_data = schemas.TokenPayload(**payload)
     except (jwt.JWTError, ValidationError) as e:
@@ -101,7 +100,7 @@ def _check_session(
 def add_cookie(response: Response, key, value: str, **kwargs):
     response.set_cookie(key=key,
                         value=value,
-                        max_age=Settings.ACCESS_TOKEN_EXPIRE_MINUTES*60,
-                        domain=Settings.COOKIES_DOMAIN if Settings.COOKIES_DOMAIN else None,
+                        max_age=config.ACCESS_TOKEN_EXPIRE_MINUTES*60,
+                        domain=config.COOKIES_DOMAIN if config.COOKIES_DOMAIN else None,
                         **kwargs
                         )

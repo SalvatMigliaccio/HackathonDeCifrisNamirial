@@ -10,13 +10,12 @@ from sqlalchemy.orm import Session
 import crud, models, schemas
 from  endpoints import deps
 from  core import security
-from  core.config import Settings
 from  endpoints.deps import add_cookie
 
 
 from  schemas import UserCreate
 
-
+ACCESS_TOKEN_EXPIRE_MINUTES = 100
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 router = APIRouter()
@@ -25,7 +24,7 @@ router = APIRouter()
 @router.post("/login")
 async def user_auth(
     response: Response,
-    email: str = Form(...),
+    username: str = Form(...),
     password: str = Form(...),
     db: Session = Depends(deps.get_db),
 ):
@@ -38,23 +37,23 @@ async def user_auth(
         status_code=302
     )
 
-    db_user: models.User = crud.get_user_by_email(
-        db=db, email=email)
+    db_user: models.User = await crud.get_user_by_email(
+        db=db, email=username)
     is_operator = False
     if db_user is None:
-        db_user = crud.get_operator_by_email(db=db, email = email)
+        db_user = await crud.get_operator_by_email(db=db, email = username)
         is_operator = True
         if db_user is None:
             raise HTTPException(
                 status_code=404, detail="Incorrect email or password")
 
-    if not security.verify_password(password, db_user.passwordHash):
+    if not security.verify_password(password, db_user.password_hash):
         raise HTTPException(
             status_code=404, detail="Incorrect email or password")
 
     access_token = security.create_access_token(
         db_user.id,
-        timedelta(minutes=Settings.ACCESS_TOKEN_EXPIRE_MINUTES), is_operator
+        timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES), is_operator
     ) or ""
 
     add_cookie(response=response, key="token", value=access_token)

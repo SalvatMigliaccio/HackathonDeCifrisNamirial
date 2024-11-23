@@ -1,6 +1,7 @@
 services:
   postgres:
-    image: postgres:15
+    build: ./backend/pygres/
+    # image: postgres:15
     container_name: postgres_db
     environment:
       POSTGRES_USER: Hackathon2024
@@ -10,7 +11,6 @@ services:
       - "5432:5432" 
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - .backend/pygres/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   auth_module:
     build: ./backend
@@ -21,7 +21,7 @@ services:
     environment:
       DATABASE_URL: "postgresql://Hackathon2024:Hackathon2024@postgres:5432/db_Hackathon2024"  # URL del DB PostgreSQL (utilizzando il nome del servizio come host)
     volumes:
-      - .:/backend
+      - ./backend:/backend
   
   ripple_module:
     # import from crud/compose.yml
