@@ -50,8 +50,8 @@ async def update_operator(db: AsyncSession, operatori: Operatore):
     
 #defining crud for operator groups
 
-async def get_group_by_id(db: AsyncSession, uid: str):
-    result = await db.execute(select(Gruppo).filter(Gruppo.UID == uid))
+async def get_group_by_id(db: AsyncSession, id: str):
+    result = await db.execute(select(Gruppo).filter(Gruppo.id == id))
     return result.scalars().first()
 
 async def create_group(db: AsyncSession, group: Gruppo):
