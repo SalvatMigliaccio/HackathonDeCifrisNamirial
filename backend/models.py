@@ -7,8 +7,8 @@ class User(Base):
 
     UID = Column(Integer, primary_key=True, index=True)
     Username = Column(String(255), unique=True, nullable=False)
-    PasswordHash = Column(Text, nullable=False)
-
+    passwordHash = Column(Text, nullable=False)
+    email = Column(String(255), unique=True, nullable=False)
     practices = relationship("Pratica", back_populates="user")
     documents = relationship("Documento", back_populates="user")
 
@@ -18,8 +18,8 @@ class Operatori(Base):
 
     UID = Column(Integer, primary_key=True, index=True)
     Username = Column(String(255), unique=True, nullable=False)
-    PasswordHash = Column(Text, nullable=False)
-
+    passwordHash = Column(Text, nullable=False)
+    email = Column(String(255), unique=True, nullable=False)
 
 class Gruppi(Base):
     __tablename__ = "Gruppi"

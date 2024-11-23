@@ -5,7 +5,7 @@ class UserBase(BaseModel):
     Username: str
 
 class UserCreate(UserBase):
-    PasswordHash: str
+    passwordHash: str
 
 class UserRead(UserBase):
     UID: int
@@ -18,7 +18,7 @@ class OperatoriBase(BaseModel):
     Username: str
 
 class OperatoriCreate(OperatoriBase):
-    PasswordHash: str
+    passwordHash: str
 
 class OperatoriRead(OperatoriBase):
     UID: int

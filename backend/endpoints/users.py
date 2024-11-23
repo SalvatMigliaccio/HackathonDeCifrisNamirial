@@ -7,16 +7,16 @@ from sqlalchemy.orm import Session
 from pygres.database import get_db
 from  backend import crud, models, schemas
 from backend.endpoints import deps
-
-
-
+from backend.core.config import settings
+from backend.core.utils import send_new_account_email
+from backend.core import security
 
 
 
 router = APIRouter()
 
 
-@router.get("/", response_model=List[schemas.User])
+@router.get("/", response_model=List[schemas.UserBase])
 def read_users(
     db: Session = Depends(get_db),
     skip: int = 0,
@@ -29,7 +29,7 @@ def read_users(
     users = crud.user.get_multi(db, skip=skip, limit=limit)
     return users
 
-@router.post("/", response_model=schemas.User)
+@router.post("/", response_model=schemas.UserBase)
 def create_user(
     *,
     db: Session = Depends(get_db),
@@ -124,35 +124,4 @@ def update_user(
             detail="The user with this username does not exist in the system",
         )
     user = crud.user.update(db, db_obj=user, obj_in=user_in)
-    return user
-
-
-@router.post("/me/set_decentraland_id", response_model=schemas.User)
-def set_decentraland_id(
-    *,
-    db: Session = Depends(deps.get_db),
-    signed_decentraland_id: str = Body(None),
-    current_user: models.User = Depends(deps.get_current_active_user),
-) -> Any:
-    """
-    Update own user.
-    """
-    if signed_decentraland_id is None:
-        raise HTTPException(
-            status_code=400,
-            detail="decentraland_id is required",
-        )
-
-    decentraland_id = security.verify_decentraland_id(signed_decentraland_id)
-    if decentraland_id is None:
-        raise HTTPException(
-            status_code=400,
-            detail="decentraland_id is invalid",
-        )
-
-    current_user_data = jsonable_encoder(current_user)
-    user_in = schemas.UserUpdate(**current_user_data)
-    user_in.decentraland_id = decentraland_id
-
-    user = crud.user.update(db, db_obj=current_user, obj_in=user_in)
     return user

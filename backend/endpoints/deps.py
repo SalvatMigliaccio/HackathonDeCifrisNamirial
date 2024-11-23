@@ -1,6 +1,6 @@
 from typing import Generator
 from jose import jwt
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
@@ -97,3 +97,11 @@ def _check_session(
         logger.error("Session expired")
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="Session expired")
+
+def add_cookie(response: Response, key, value: str, **kwargs):
+    response.set_cookie(key=key,
+                        value=value,
+                        max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES*60,
+                        domain=settings.COOKIES_DOMAIN if settings.COOKIES_DOMAIN else None,
+                        **kwargs
+                        )
