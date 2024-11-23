@@ -7,7 +7,6 @@ from sqlalchemy.orm import Session
 from endpoints.deps import get_db
 import crud, models, schemas
 from  endpoints import deps
-from  core.config import Settings
 from  core.utils import send_new_account_email
 from  core import security
 
@@ -30,26 +29,23 @@ def read_users(
     return users
 
 @router.post("/", response_model=schemas.UserBase)
-def create_user(
+async def create_user(
     *,
     db: Session = Depends(get_db),
     user_in: schemas.UserCreate,
-    current_user: models.User = Depends(deps.get_current_active_superuser),
 ) -> Any:
     """
     Create new user.
     """
-    if crud.user.get_by_email(db, email=user_in.email):
+    if await crud.get_user_by_email(db, email=user_in.email):
+        
         raise HTTPException(
             status_code=400,
-            detail="The user with this username already exists in the system.",
+            detail=f"The user with this username already exists in the system.",
         )
-    user = crud.user.create(db, obj_in=user_in)
-    if settings.EMAILS_ENABLED == 'true' and user_in.email:
-        send_new_account_email(
-            email_to=user_in.email, 
-            username=user_in.email
-        )
+    user_in.password_hash = security.hash_password(user_in.password_hash)
+    user = await crud.create_user(db, user=user_in)
+
     return user
 
 

@@ -4,7 +4,8 @@ from typing import Any, Union
 from jose import jwt
 from passlib.context import CryptContext
 
-from  core.config import Settings
+from .config import JWT_PRIVATE_KEY
+
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -16,7 +17,7 @@ def create_access_token(
     subject: Union[str, Any], expires_delta: timedelta = None, isOperator: bool = False
 ) -> str:
     expire = datetime.utcnow() + expires_delta if expires_delta else timedelta(
-        minutes=Settings.ACCESS_TOKEN_EXPIRE_MINUTES
+        minutes=10
     )
     to_encode = {
         "iat": datetime.utcnow(),
@@ -25,7 +26,7 @@ def create_access_token(
         "isOperator":  isOperator
     }
     encoded_jwt = jwt.encode(
-        to_encode, settings.JWT_PRIVATE_KEY, algorithm=ALGORITHM)
+        to_encode, JWT_PRIVATE_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
