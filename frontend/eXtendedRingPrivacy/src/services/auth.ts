@@ -1,3 +1,5 @@
+const AUTHAPI = 'http://localhost:8001';
+
 class AuthService {
     private static instance: AuthService;
 
@@ -11,28 +13,24 @@ class AuthService {
     }
 
     public async login(email: string, password: string): Promise<any> {
-        // Implement login logic here
-        // Example:
-        // return await fetch('/api/login', { method: 'POST', body: JSON.stringify({ email, password }) });
+        return await fetch('${AUTHAPI}/api/login', { method: 'POST', body: JSON.stringify({ username:email, password }) });
     }
 
     public async signIn(username:string, email: string, password: string): Promise<any> {
-        // Implement sign-in logic here
-        // Example:
-        // return await fetch('/api/signin', { method: 'POST', body: JSON.stringify({ email, password }) });
+      
+      return await fetch('${AUTHAPI}/api/users/', { method: 'POST', body: JSON.stringify({ username, email, password }) });
+ 
     }
 
     public async getMe(): Promise<any> {
-        // Implement get_me logic here
-        // Example:
-        // return await fetch('/api/me', { method: 'GET' });
+        const token = document.cookie.split(';')?.find((cookie) => cookie.trim().startsWith('token='))?.split('=')[1];
+        return await fetch('${AUTHAPI}/api/users/me', { method: 'GET', headers: 
+            {
+                Authorization: `Bearer ${token}`,
+            }
+         });
     }
 
-    public async updateMe(data: any): Promise<any> {
-        // Implement update_me logic here
-        // Example:
-        // return await fetch('/api/me', { method: 'PUT', body: JSON.stringify(data) });
-    }
 
     public async getUserByEmail(email: string): Promise<any> {
         // Implement get_user_by_email logic here
@@ -41,9 +39,12 @@ class AuthService {
     }
 
     public async getMyGroups(): Promise<any> {
-        // Implement get_my_groups logic here
-        // Example:
-        // return await fetch('/api/my-groups', { method: 'GET' });
+        const token = document.cookie.split(';')?.find((cookie) => cookie.trim().startsWith('token='))?.split('=')[1];
+        return await fetch('${AUTHAPI}/api/users/me?groups', { method: 'GET', headers: 
+            {
+                Authorization: `Bearer ${token}`,
+            }
+         });
     }
 }
 

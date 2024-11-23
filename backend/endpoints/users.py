@@ -11,22 +11,8 @@ from  core.utils import send_new_account_email
 from  core import security
 
 
-
 router = APIRouter()
 
-
-@router.get("/", response_model=List[schemas.UserBase])
-def read_users(
-    db: Session = Depends(get_db),
-    skip: int = 0,
-    limit: int = 100,
-    # current_user: models.User = Depends(deps.get_current_active_superuser),
-) -> Any:
-    """
-    Retrieve users.
-    """
-    users = crud.user.get_multi(db, skip=skip, limit=limit)
-    return users
 
 @router.post("/", response_model=schemas.UserBase)
 async def create_user(
@@ -71,33 +57,26 @@ def update_user_me(
 
 @router.get("/me", response_model=schemas.UserBase)
 def read_user_me(
+    groups: bool = False,
+    dossiers: bool = False,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(deps.get_current_active_user),
 ) -> Any:
     """
     Get current user.
     """
+    if groups and dossiers:
+        raise HTTPException(status_code=422, detail="Both groups and dossiers cannot be processed")
+    if groups:
+        return crud.get_groups(current_user.id)
+    if dossiers:
+        return crud.get_dossiers(current_user.id)
     return current_user
 
 
-
-
-@router.put("/{user_id}", response_model=schemas.UserBase)
-def update_user(
-    *,
-    db: Session = Depends(deps.get_db),
-    email: str,
-    user_in: schemas.UserBase,
-    # current_user: models.User = Depends(deps.get_current_active_superuser),
-) -> Any:
-    """
-    Update a user.
-    """
-    user = crud.get_user_by_email(db, email=email)
-    if not user:
-        raise HTTPException(
-            status_code=404,
-            detail="The user with this username does not exist in the system",
-        )
-    user = crud.user.update(db, db_obj=user, obj_in=user_in)
-    return user
+@router.get("/", response_model=schemas.UserBase)
+async def get_user(email: str, db: Session = Depends(get_db)):
+    response = crud.get_user_by_email(db, email)
+    if not response:
+        raise HTTPException(status_code=404)
+    return response
